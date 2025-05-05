@@ -2,4 +2,5 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 
 - npm install --save-dev nodemon
 - npm init @eslint/config@latest
+- npm install express
 -
