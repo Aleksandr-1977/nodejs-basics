@@ -1,31 +1,33 @@
 import express from 'express';
-const app = express();
-// import fs from 'node:fs/promises';
-// const message = 'Hello world';
-// function sum(a, b) {
-//   return a + b;
-// }
-// const result = sum(2, 5);
-// console.log(result);
-// console.log(message);
 
-// fs.readFile('text.txt', { encoding: 'utf-8' }, (err, data) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log(data);
-// });
-// fs.writeFile('write.txt', 'Hello,world!')
-//   .then(() => {
-//     console.log('File written successfully');
-//   })
-//   .catch((err) => {
-//     console.error('Error writing file', err);
-//   });
-// fs.appendFile('write.txt', 'Bye,world!\n')
-//   .then(() => {
-//     console.log('File appended successfully');
-//   })
-//   .catch((err) => {
-//     console.error('Error appending file', err);
-//   });
+const PORT = 3000;
+
+const app = express();
+
+// Middleware для логування часу запиту
+app.use((req, res, next) => {
+  console.log(`Time: ${new Date().toLocaleString()}`);
+  next();
+});
+
+// Вбудований у express middleware для обробки (парсингу) JSON-даних у запитах
+// наприклад, у запитах POST або PATCH
+app.use(express.json());
+
+// Маршрут для обробки GET-запитів на '/'
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Hello, Node!',
+  });
+});
+
+// Middleware для обробких помилок (приймає 4 аргументи)
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    message: 'Something went wrong',
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
