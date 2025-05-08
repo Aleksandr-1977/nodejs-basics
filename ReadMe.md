@@ -5,3 +5,4 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm install express
 - npm install pino-http
 - npm i --save-dev pino-pretty
+- npm i cors

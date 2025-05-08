@@ -1,5 +1,6 @@
 import express from 'express';
 import pino from 'pino-http';
+import cors from 'cors';
 
 const PORT = 3000;
 
@@ -21,8 +22,7 @@ app.get('/', (req, res) => {
     message: 'Hello, Node!',
   });
 });
-
-// Middleware для обробких помилок (приймає 4 аргументи)
+app.use(cors()); // Middleware для обробких помилок (приймає 4 аргументи)
 app.use((err, req, res, next) => {
   res.status(500).json({
     message: 'Something went wrong',
