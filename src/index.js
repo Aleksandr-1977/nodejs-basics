@@ -1,4 +1,5 @@
 import express from 'express';
+import pino from 'pino-http';
 
 const PORT = 3000;
 
@@ -27,7 +28,13 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong',
   });
 });
-
+app.use(
+  pino({
+    transport: {
+      target: 'pino-pretty',
+    },
+  }),
+);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
