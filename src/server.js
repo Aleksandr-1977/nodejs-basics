@@ -22,7 +22,11 @@ export const startServer = () => {
   );
   app.get('/students', async (req, res) => {
     const students = await getAllStudents();
-    res.status(200).json({ data: students });
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully found students!',
+      data: students,
+    });
   });
   app.get('/students/:studentId', async (req, res, next) => {
     const { studentId } = req.params;
@@ -32,14 +36,16 @@ export const startServer = () => {
       return;
     }
     res.status(200).json({
+      status: 200,
+      message: `Successfully found student with id ${studentId}!`,
       data: student,
     });
   });
-  app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello world!',
-    });
-  });
+  // app.get('/', (req, res) => {
+  //   res.json({
+  //     message: 'Hello world!',
+  //   });
+  // });
 
   app.use((req, res, next) => {
     res.status(404).json({
