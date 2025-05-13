@@ -9,4 +9,5 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm install dotenv
 - npm install mongodb
 - npm install mongoose
+- npm install http-errors
 -
