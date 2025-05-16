@@ -21,7 +21,7 @@ router.get('/students/:studentId', ctrlWrapper(getStudentByIdController));
 router.post('/students', jsonParser, ctrlWrapper(createStudentsController));
 router.delete('/students/:studentId', ctrlWrapper(deleteStudentController));
 router.put(
-  '/students/studentsId',
+  '/students/:studentId',
   jsonParser,
   ctrlWrapper(upsertStudentController),
 );

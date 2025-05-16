@@ -20,8 +20,9 @@ export const deleteStudent = async (studentId) => {
   return student;
 };
 export const updateStudent = async (studentId, payload, options = {}) => {
-  const rawResult = await StudentsCollection.findOneAndUpdate(
+  const rawResult = await StudentsCollection.findByIdAndUpdate(
     { _id: studentId },
+
     payload,
     { new: true, includeResultMetadata: true, ...options },
   );
