@@ -10,4 +10,5 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm install mongodb
 - npm install mongoose
 - npm install http-errors
+- npm i joi
 -
