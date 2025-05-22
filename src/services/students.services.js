@@ -1,15 +1,29 @@
+import { SORT_ORDER } from '../constants/index.js';
 import { StudentsCollection } from '../db/models/students.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const getAllStudents = async ({ page, perPage }) => {
+export const getAllStudents = async ({
+  page = 1,
+  perPage = 10,
+  sortOrder = SORT_ORDER.ASC,
+  sortBy = '_id',
+}) => {
   const limit = perPage;
-  const skip = page > 0 ? (page - 1) * perPage : 0;
+  const skip = (page - 1) * perPage;
+
   const studentsQuery = StudentsCollection.find();
   const studentsCount = await StudentsCollection.find()
     .merge(studentsQuery)
     .countDocuments();
-  const students = await studentsQuery.skip(skip).limit(limit).exec();
+
+  const students = await studentsQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+
   const paginationData = calculatePaginationData(studentsCount, perPage, page);
+
   return {
     data: students,
     ...paginationData,
