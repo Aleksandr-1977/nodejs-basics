@@ -22,32 +22,24 @@ const jsonParser = express.json({
   limit: '100kb',
 });
 
-router.get('/students', ctrlWrapper(getStudentsController));
-router.get(
-  '/students/:studentId',
-  isValidId,
-  ctrlWrapper(getStudentByIdController),
-);
+router.get('/', ctrlWrapper(getStudentsController));
+router.get('/:studentId', isValidId, ctrlWrapper(getStudentByIdController));
 router.post(
   '/students',
   validateBody(createStudentSchema),
   jsonParser,
   ctrlWrapper(createStudentsController),
 );
-router.delete(
-  '/students/:studentId',
-  isValidId,
-  ctrlWrapper(deleteStudentController),
-);
+router.delete('/:studentId', isValidId, ctrlWrapper(deleteStudentController));
 router.put(
-  '/students/:studentId',
+  '/:studentId',
   isValidId,
   validateBody(createStudentSchema),
   jsonParser,
   ctrlWrapper(upsertStudentController),
 );
 router.patch(
-  '/students/:studentId',
+  '/:studentId',
   isValidId,
   validateBody(updateStudentSchema),
   jsonParser,

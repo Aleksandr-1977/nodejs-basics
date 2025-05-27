@@ -1,7 +1,7 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import studentsRouter from './routers/students.router.js';
+import router from './routers/index.js';
 
 import { getEnvVar } from './utils/getEnvVar.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -21,7 +21,7 @@ export const startServer = () => {
       },
     }),
   );
-  app.use(studentsRouter);
+  app.use(router);
 
   app.use(errorHandler);
 
