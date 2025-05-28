@@ -12,3 +12,4 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm install http-errors
 - npm i joi
 - npm i bcrypt
+- npm i cookie-parser

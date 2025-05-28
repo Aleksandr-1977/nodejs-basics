@@ -28,7 +28,6 @@ router.post(
   '/login',
   jsonParser,
   validateBody(loginUserSchema),
-
   ctrlWrapper(loginUserController),
 );
 export default router;
