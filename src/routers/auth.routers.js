@@ -1,8 +1,14 @@
 import { Router } from 'express';
 import express from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { registerUserSchema } from '../validation/auth.validation.js';
-import { registerUserController } from '../controllers/auth.controller.js';
+import {
+  loginUserSchema,
+  registerUserSchema,
+} from '../validation/auth.validation.js';
+import {
+  loginUserController,
+  registerUserController,
+} from '../controllers/auth.controller.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
 const router = Router();
@@ -17,5 +23,10 @@ router.post(
   jsonParser,
   ctrlWrapper(registerUserController),
 );
-
+router.post(
+  '/login',
+  validateBody(loginUserSchema),
+  jsonParser,
+  ctrlWrapper(loginUserController),
+);
 export default router;
