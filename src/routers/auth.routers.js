@@ -19,14 +19,16 @@ const jsonParser = express.json({
 
 router.post(
   '/register',
-  validateBody(registerUserSchema),
   jsonParser,
+  validateBody(registerUserSchema),
+
   ctrlWrapper(registerUserController),
 );
 router.post(
   '/login',
-  validateBody(loginUserSchema),
   jsonParser,
+  validateBody(loginUserSchema),
+
   ctrlWrapper(loginUserController),
 );
 export default router;
