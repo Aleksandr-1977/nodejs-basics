@@ -1,4 +1,8 @@
-import { loginUser, registerUser } from '../services/auth.services.js';
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+} from '../services/auth.services.js';
 import { ONE_DAY } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
@@ -27,5 +31,19 @@ export const loginUserController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
     },
+  });
+};
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
+  }
+
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
+
+  // res.status(204).send();
+  res.json({
+    status: 204,
+    message: 'Пользователь успешно вышел из системы!',
   });
 };
