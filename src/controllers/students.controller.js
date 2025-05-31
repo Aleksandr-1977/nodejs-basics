@@ -40,6 +40,9 @@ export const getStudentByIdController = async (req, res, next) => {
   });
 };
 export const createStudentsController = async (req, res) => {
+  if (req.user.role !== 'PARENT') {
+    req.body.parentId = req.user._id;
+  }
   const student = await createStudent(req.body);
 
   res.status(201).json({
