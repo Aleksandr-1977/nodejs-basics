@@ -8,7 +8,7 @@ export const checkRoles =
   async (req, res, next) => {
     const { user } = req;
     if (!user) {
-      next(createHttpError(401));
+      next(createHttpError(401, 'Такой пользователь отсутствует'));
       return;
     }
 
@@ -21,7 +21,7 @@ export const checkRoles =
     if (roles.includes(ROLES.PARENT) && role === ROLES.PARENT) {
       const { studentId } = req.params;
       if (!studentId) {
-        next(createHttpError(403));
+        next(createHttpError(403, 'Не хватает доступа'));
         return;
       }
 
@@ -36,5 +36,5 @@ export const checkRoles =
       }
     }
 
-    next(createHttpError(403));
+    next(createHttpError(403, 'Нет доступа'));
   };

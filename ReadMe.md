@@ -13,3 +13,5 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm i joi
 - npm i bcrypt
 - npm i cookie-parser
+- npm install nodemailer
+- npm i jsonwebtoken

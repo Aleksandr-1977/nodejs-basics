@@ -34,3 +34,11 @@ export const loginUserSchema = Joi.object({
     'any.required': 'Поле обязательное',
   }),
 });
+export const requestResetEmailSchema = Joi.object({
+  email: Joi.string().email().min(6).max(30).required().messages({
+    'string.email': 'Должно быть валидным эл. адресом',
+    'string.min': 'Должно содержать не менее 6 символов',
+    'string.max': 'Должно содержать не более 30 символов',
+    'any.required': 'Поле обязательное',
+  }),
+});
