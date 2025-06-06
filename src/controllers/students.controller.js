@@ -9,6 +9,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getStudentsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -39,18 +40,32 @@ export const getStudentByIdController = async (req, res, next) => {
     data: student,
   });
 };
-export const createStudentsController = async (req, res) => {
-  if (req.user.role !== 'PARENT') {
-    req.body.parentId = req.user._id;
-  }
-  const student = await createStudent(req.body);
 
-  res.status(201).json({
-    status: 201,
-    message: `Successfully created a student!`,
-    data: student,
-  });
+export const createStudentsController = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'PARENT') {
+      req.body.parentId = req.user._id;
+    }
+    const photo = req.file;
+    let photoUrl;
+    if (photo) {
+      photoUrl = await saveFileToCloudinary(photo);
+    }
+    const studentData = {
+      ...req.body,
+      ...(photoUrl && { photo: photoUrl }),
+    };
+    const student = await createStudent(studentData);
+    res.status(201).json({
+      status: 201,
+      message: `Successfully created a student!`,
+      data: student,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
 export const deleteStudentController = async (req, res, next) => {
   const { studentId } = req.params;
   const student = await deleteStudent(studentId);
@@ -61,6 +76,7 @@ export const deleteStudentController = async (req, res, next) => {
   }
   res.status(204).send();
 };
+
 export const upsertStudentController = async (req, res, next) => {
   const { studentId } = req.params;
   const result = await updateStudent(studentId, req.body, {
@@ -81,17 +97,32 @@ export const upsertStudentController = async (req, res, next) => {
   });
 };
 export const patchStudentController = async (req, res, next) => {
-  const { studentId } = req.params;
-  const result = await updateStudent(studentId, req.body);
+  try {
+    const { studentId } = req.params;
+    const photo = req.file;
+    let photoUrl;
 
-  if (!result) {
-    next(createHttpError(404, 'Student not found'));
-    return;
+    if (photo) {
+      photoUrl = await saveFileToCloudinary(photo);
+    }
+
+    const updateData = {
+      ...req.body,
+      ...(photoUrl && { photo: photoUrl }),
+    };
+
+    const result = await updateStudent(studentId, updateData);
+
+    if (!result) {
+      return next(createHttpError(404, 'Student not found'));
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully patched a student!',
+      data: result.student,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  res.json({
-    status: 200,
-    message: `Successfully patched a student!`,
-    data: result.student,
-  });
 };

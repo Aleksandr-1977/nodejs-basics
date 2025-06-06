@@ -16,3 +16,5 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm install nodemailer
 - npm i jsonwebtoken
 - npm i handlebars
+- npm i multer
+- npm install cloudinary
