@@ -9,6 +9,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getStudentsController = async (req, res) => {
@@ -41,88 +42,84 @@ export const getStudentByIdController = async (req, res, next) => {
   });
 };
 
-export const createStudentsController = async (req, res, next) => {
-  try {
-    if (req.user.role !== 'PARENT') {
-      req.body.parentId = req.user._id;
-    }
-    const photo = req.file;
-    let photoUrl;
-    if (photo) {
-      photoUrl = await saveFileToCloudinary(photo);
-    }
-    const studentData = {
-      ...req.body,
-      ...(photoUrl && { photo: photoUrl }),
-    };
-    const student = await createStudent(studentData);
-    res.status(201).json({
-      status: 201,
-      message: `Successfully created a student!`,
-      data: student,
-    });
-  } catch (error) {
-    next(error);
+export const createStudentsController = async (req, res) => {
+  if (req.user.role !== 'PARENT') {
+    req.body.parentId = req.user._id;
   }
-};
+  const photo = req.file;
+  let photoUrl;
 
-export const deleteStudentController = async (req, res, next) => {
-  const { studentId } = req.params;
-  const student = await deleteStudent(studentId);
-
-  if (!student) {
-    next(createHttpError(404, 'Student not found'));
-    return;
-  }
-  res.status(204).send();
-};
-
-export const upsertStudentController = async (req, res, next) => {
-  const { studentId } = req.params;
-  const result = await updateStudent(studentId, req.body, {
-    upsert: true,
-  });
-
-  if (!result) {
-    next(createHttpError(404, 'Student not found'));
-    return;
+  if (photo && getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+    photoUrl = await saveFileToCloudinary(photo);
   }
 
-  const status = result.isNew ? 201 : 200;
+  const studentData = {
+    ...req.body,
+    ...(photoUrl && { photo: photoUrl }),
+  };
 
-  res.status(status).json({
-    status,
-    message: `Successfully upserted a student!`,
-    data: result.student,
+  const student = await createStudent(studentData);
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a student!`,
+    data: student,
   });
 };
-export const patchStudentController = async (req, res, next) => {
-  try {
+  export const deleteStudentController = async (req, res, next) => {
     const { studentId } = req.params;
-    const photo = req.file;
-    let photoUrl;
+    const student = await deleteStudent(studentId);
 
-    if (photo) {
-      photoUrl = await saveFileToCloudinary(photo);
+    if (!student) {
+      next(createHttpError(404, 'Student not found'));
+      return;
     }
-
-    const updateData = {
-      ...req.body,
-      ...(photoUrl && { photo: photoUrl }),
-    };
-
-    const result = await updateStudent(studentId, updateData);
+    res.status(204).send();
+  };
+  export const upsertStudentController = async (req, res, next) => {
+    const { studentId } = req.params;
+    const result = await updateStudent(studentId, req.body, {
+      upsert: true,
+    });
 
     if (!result) {
-      return next(createHttpError(404, 'Student not found'));
+      next(createHttpError(404, 'Student not found'));
+      return;
     }
 
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully patched a student!',
+    const status = result.isNew ? 201 : 200;
+
+    res.status(status).json({
+      status,
+      message: `Successfully upserted a student!`,
       data: result.student,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+  };
+
+  export const patchStudentController = async (req, res, next) => {
+    const { studentId } = req.params;
+    const photo = req.file;
+
+    let photoUrl;
+
+    if (photo) {
+      if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+        photoUrl = await saveFileToCloudinary(photo);
+      }
+    }
+
+    const result = await updateStudent(studentId, {
+      ...req.body,
+      ...(photoUrl && { photo: photoUrl }),
+    });
+
+    if (!result) {
+      next(createHttpError(404, 'Student not found'));
+      return;
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully patched a student!`,
+      data: result.student,
+    });
+  };
