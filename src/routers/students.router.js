@@ -38,7 +38,6 @@ router.post(
   checkRoles(ROLES.TEACHER),
   upload.single('photo'),
   jsonParser,
-
   validateBody(createStudentSchema),
   ctrlWrapper(createStudentsController),
 );
@@ -62,7 +61,6 @@ router.patch(
   isValidId,
   upload.single('photo'),
   jsonParser,
-
   validateBody(updateStudentSchema),
   ctrlWrapper(patchStudentController),
 );
