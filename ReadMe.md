@@ -19,3 +19,5 @@ a<!-- Nodemon - інструмент для розробки на Node.js, як�
 - npm i multer
 - npm install cloudinary
 - npm i google-auth-library
+- npm i -D @redocly/cli
+- npm i swagger-ui-express
